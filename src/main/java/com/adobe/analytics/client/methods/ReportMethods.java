@@ -5,6 +5,7 @@ import static com.adobe.analytics.client.JsonUtil.o;
 import java.io.IOException;
 
 import com.adobe.analytics.client.AnalyticsClient;
+import com.adobe.analytics.client.ApiException;
 import com.adobe.analytics.client.domain.ReportDescription;
 import com.adobe.analytics.client.domain.ReportResponse;
 import com.google.gson.JsonObject;
@@ -40,7 +41,12 @@ public class ReportMethods {
 			} catch (ApiException e) {
 				if ("report_not_ready".equals(e.getError())) {
 					System.err.println("Report not ready yet.");
-					Thread.sleep(3000);
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					continue;
 				}
 				throw e;

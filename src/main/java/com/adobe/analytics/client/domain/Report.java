@@ -1,5 +1,6 @@
 package com.adobe.analytics.client.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
@@ -105,10 +106,9 @@ public class Report {
 		this.version = version;
 	}
 	
-	public List<Record> getRecords() {
-		dataList = this.getData();
-		partialRecord =	new Record(this.getMetrics().size() + 1);
-		List<Record> records = new ArrayList<>();
+	// copy from https://github.com/Adobe-Marketing-Cloud/analytics-samples/blob/master/export-report/java/src/main/java/com/adobe/analytics/sample/report/ExportReport.java
+	public List<Record> flattenReportData(List<ReportData> dataList, Record partialRecord) {
+		final List<Record> records = new ArrayList<>();
 		for (final ReportData data : dataList) {
 			final Record record = partialRecord.clone();
 			record.addElements(data);
@@ -122,6 +122,16 @@ public class Report {
 		return records;
 	}
 	
+	// copy from https://github.com/Adobe-Marketing-Cloud/analytics-samples/blob/master/export-report/java/src/main/java/com/adobe/analytics/sample/report/ExportReport.java
+	public List<Record> getRecords() {
+		List<ReportData> dataList = this.getData();
+		Record partialRecord = new Record(this.getMetrics().size() + 1);
+		List<Record> records = new ArrayList<>();
+		records = flattenReportData(dataList, partialRecord);
+		return records;
+	}
+
+	// copy from https://github.com/Adobe-Marketing-Cloud/analytics-samples/blob/master/export-report/java/src/main/java/com/adobe/analytics/sample/report/ExportReport.java
 	public List<String> getHeaders() {
 		List<String> headers = new ArrayList<>();
 		headers.add("name");
