@@ -39,6 +39,11 @@ public class Record implements Iterable<String>, Cloneable {
 			}
 		}
 	}
+	
+	public String getElementValue(String element) {
+		int colIndex = elements.indexOf(element);
+		return metrics.get(colIndex);
+	}
 
 	private void addElement(Integer element) {
 		if (element != null) {
