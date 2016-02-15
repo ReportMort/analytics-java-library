@@ -104,5 +104,49 @@ public class Report {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-
+	
+	public List<Record> getRecords() {
+		dataList = this.getData();
+		partialRecord =	new Record(this.getMetrics().size() + 1);
+		List<Record> records = new ArrayList<>();
+		for (final ReportData data : dataList) {
+			final Record record = partialRecord.clone();
+			record.addElements(data);
+			if (data.getBreakdown() == null) {
+				record.addMetrics(data);
+				records.add(record);
+			} else {
+				records.addAll(flattenReportData(data.getBreakdown(), record));
+			}
+		}
+		return records;
+	}
+	
+	public List<String> getHeaders() {
+		List<String> headers = new ArrayList<>();
+		headers.add("name");
+		ReportData data = this.getData().get(0);
+		if (data.getYear() != null) {
+			headers.add("year");
+		}
+		if (data.getMonth() != null) {
+			headers.add("month");
+		}
+		if (data.getDay() != null) {
+			headers.add("day");
+		}
+		if (data.getHour() != null) {
+			headers.add("hour");
+		}
+		if (data.getMinute() != null) {
+			headers.add("minute");
+		}
+		for (final ReportElement e : this.getElements()) {
+			headers.add(e.getId());
+		}
+		for (final ReportMetric m : this.getMetrics()) {
+			headers.add(m.getId());
+		}
+		return headers;
+	}
 }

@@ -26,4 +26,27 @@ public class ReportMethods {
 	public ReportResponse get(int reportId) throws IOException {
 		return client.callMethod("Report.Get", o("reportID", reportId), ReportResponse.class);
 	}
+	
+	public ReportResponse retrieveReport(ReportDescription reportDesc) throws IOException {
+		System.err.println("Sending queue request...");
+		final int reportId = this.queue(reportDesc);
+		System.err.println("Got report id: " + reportId);
+
+		ReportResponse response = null;
+		System.err.println("Sending get request for report " + reportId);
+		while (response == null) {
+			try {
+				response = this.get(reportId);
+			} catch (ApiException e) {
+				if ("report_not_ready".equals(e.getError())) {
+					System.err.println("Report not ready yet.");
+					Thread.sleep(3000);
+					continue;
+				}
+				throw e;
+			}
+		}
+		System.err.println("Got report!");
+		return response;
+	}
 }
