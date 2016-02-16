@@ -40,9 +40,12 @@ public class Record implements Iterable<String>, Cloneable {
 		}
 	}
 	
-	public String getElementValue(String element) {
-		int colIndex = elements.indexOf(element);
-		return metrics.get(colIndex);
+	public List<String> getElements(){
+		return elements;
+	}
+	
+	public List<String> getMetrics(){
+		return metrics;
 	}
 
 	private void addElement(Integer element) {
